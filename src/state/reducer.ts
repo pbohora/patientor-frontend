@@ -40,7 +40,6 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         singlePatient: {
-          ...state.singlePatient,
           [action.payload.id]: action.payload,
         },
       };
