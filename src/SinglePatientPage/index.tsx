@@ -6,12 +6,12 @@ import { Icon } from 'semantic-ui-react';
 import { apiBaseUrl } from '../constants';
 
 import { useStateValue, setSinglePatient } from '../state';
-import { Patient } from '../types';
+import { Patient, Diagnosis } from '../types';
 
 const SinglePatientPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   console.log(id);
-  const [{ singlePatient }, dispatch] = useStateValue();
+  const [{ singlePatient, diagnosisList }, dispatch] = useStateValue();
   React.useEffect(() => {
     const fetchPatientList = async () => {
       try {
@@ -27,7 +27,7 @@ const SinglePatientPage: React.FC = () => {
   }, [dispatch, id]);
 
   const patient = Object.values(singlePatient)[0];
-  console.log(patient);
+  console.log(diagnosisList);
   return (
     <>
       {patient && (
@@ -42,6 +42,27 @@ const SinglePatientPage: React.FC = () => {
           </h1>
           <h3>ssn: {patient.ssn}</h3>
           <h3>occupation: {patient.occupation}</h3>
+          <h2>Entries: </h2>
+          {patient.entries.map((entry) => (
+            <div key={entry.id}>
+              <p>
+                {entry.date} {entry.description}
+              </p>
+              <ul>
+                {entry.diagnosisCodes &&
+                  entry.diagnosisCodes.map((diagnosisCode: string) => {
+                    const diagnosis = Object.values(diagnosisList).find(
+                      (diagnosis: Diagnosis) => diagnosis.code === diagnosisCode
+                    );
+                    return (
+                      <li key={diagnosisCode}>
+                        {diagnosisCode} {diagnosis && diagnosis.name}
+                      </li>
+                    );
+                  })}
+              </ul>
+            </div>
+          ))}
         </div>
       )}
     </>
