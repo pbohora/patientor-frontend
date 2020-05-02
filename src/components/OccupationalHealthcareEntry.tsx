@@ -1,18 +1,45 @@
 import React from 'react';
-import { Card } from 'semantic-ui-react';
+import { Segment, Icon } from 'semantic-ui-react';
 
-import { Entry } from '../types';
+import { OccupationalHealthcareEntry, Diagnosis } from '../types';
+import { useStateValue } from '../state';
 
-const OccupationalHealthcareEntry: React.FC<{ entry: Entry }> = ({ entry }) => {
+const OccupationalHealthcare: React.FC<{
+  entry: OccupationalHealthcareEntry;
+}> = ({ entry }) => {
+  const [{ diagnosisList }] = useStateValue();
   return (
-    <Card>
-      <Card.Content>
-        <Card.Header>{entry.date}</Card.Header>
-        <Card.Meta>{entry.sickLeave}</Card.Meta>
-        <Card.Description>{entry.description}</Card.Description>
-      </Card.Content>
-    </Card>
+    <Segment raised>
+      <h1>
+        {entry.date} <Icon name='stethoscope' /> {entry.employerName}
+      </h1>
+      {entry.diagnosisCodes && (
+        <div>
+          <h3>Diagnosis</h3>
+          <ul>
+            {entry.diagnosisCodes.map((diagnosisCode: string) => {
+              const diagnosis = Object.values(diagnosisList).find(
+                (diagnosis: Diagnosis) => diagnosis.code === diagnosisCode
+              );
+              return (
+                <li key={diagnosisCode}>
+                  {diagnosisCode} {diagnosis && diagnosis.name}
+                </li>
+              );
+            })}{' '}
+          </ul>
+        </div>
+      )}
+
+      {entry.sickLeave && (
+        <p>
+          <strong>Sick Leave:</strong> {entry.sickLeave.startDate} -
+          {entry.sickLeave.endDate}
+        </p>
+      )}
+      <p>{entry.description}</p>
+    </Segment>
   );
 };
 
-export default OccupationalHealthcareEntry;
+export default OccupationalHealthcare;
