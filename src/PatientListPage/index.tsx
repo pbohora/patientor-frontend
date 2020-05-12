@@ -17,7 +17,7 @@ const PatientListPage: React.FC = () => {
   const [error, setError] = React.useState<string | undefined>();
 
   const openModal = (): void => setModalOpen(true);
-
+  console.log('pp', patients);
   const closeModal = (): void => {
     setModalOpen(false);
     setError(undefined);
